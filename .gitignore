@@ -16,7 +16,9 @@ venv/
 .converted_docx/
 .playwright_scrape_cache.json
 
-# Large source archives (preserve in folder, ignore in git)
+# Firebase
+.firebase/
+firebase-debug.log*
 *.zip
 ui-ux-pro-max-skill-main/
 

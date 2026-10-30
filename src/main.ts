@@ -1263,3 +1263,13 @@ window.addEventListener("DOMContentLoaded", () => {
   const app = new App();
   app.init().catch((err) => console.error("Falha ao inicializar o app:", err));
 });
+
+// Registra Service Worker para PWA Offline-First
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then((reg) => console.log("SW PWA Registrado:", reg.scope))
+      .catch((err) => console.warn("SW PWA Falha no registro:", err));
+  });
+}
