@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+target/
+
+# Build artifacts
+dist/
+dist-ssr/
+*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+.converted_docx/
+.playwright_scrape_cache.json
+
+# Large source archives (preserve in folder, ignore in git)
+*.zip
+ui-ux-pro-max-skill-main/
+
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/

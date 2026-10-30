@@ -1,0 +1,77 @@
+{
+  "marilia": {
+    "baseUrl": "https://www.marilia-auto.com.br",
+    "directPatterns": [
+      "https://www.marilia-auto.com.br/produto/{slug}",
+      "https://www.marilia-auto.com.br/produtos/{slug}"
+    ],
+    "searchUrls": [
+      "https://www.marilia-auto.com.br/?s={sku}",
+      "https://www.marilia-auto.com.br/busca?q={sku}"
+    ],
+    "catalogHome": "https://www.marilia-auto.com.br"
+  },
+  "universal": {
+    "baseUrl": "https://www.universalautomotive.com.br",
+    "directPatterns": [
+      "https://www.universalautomotive.com.br/produto/{slug}",
+      "https://www.universalautomotive.com.br/catalogo/{slug}"
+    ],
+    "searchUrls": [
+      "https://www.universalautomotive.com.br/?s={sku}",
+      "https://www.universalautomotive.com.br/catalogo?q={sku}"
+    ],
+    "catalogHome": "https://www.universalautomotive.com.br"
+  },
+  "unifap": {
+    "baseUrl": "https://www.unifap.com.br",
+    "directPatterns": [
+      "https://www.unifap.com.br/produto/{slug}",
+      "https://www.unifap.com.br/produtos/{slug}"
+    ],
+    "searchUrls": [
+      "https://www.unifap.com.br/?s={sku}"
+    ],
+    "catalogHome": "https://www.unifap.com.br"
+  },
+  "kostal": {
+    "baseUrl": "https://www.kostal.com.br",
+    "directPatterns": [
+      "https://www.kostal.com.br/produto/{slug}"
+    ],
+    "searchUrls": [
+      "https://www.kostal.com.br/?s={sku}"
+    ],
+    "catalogHome": "https://www.kostal.com.br"
+  },
+  "ospina": {
+    "baseUrl": "https://www.ospina.com.br",
+    "directPatterns": [
+      "https://www.ospina.com.br/produto/{slug}"
+    ],
+    "searchUrls": [
+      "https://www.ospina.com.br/?s={sku}"
+    ],
+    "catalogHome": "https://www.ospina.com.br"
+  },
+  "dpaula": {
+    "baseUrl": "https://www.dpaula.com.br",
+    "directPatterns": [
+      "https://www.dpaula.com.br/produto/{slug}"
+    ],
+    "searchUrls": [
+      "https://www.dpaula.com.br/?s={sku}"
+    ],
+    "catalogHome": "https://www.dpaula.com.br"
+  },
+  "dni": {
+    "baseUrl": "https://www.dni.com.br",
+    "directPatterns": [
+      "https://www.dni.com.br/produto/{slug}"
+    ],
+    "searchUrls": [
+      "https://www.dni.com.br/?s={sku}"
+    ],
+    "catalogHome": "https://www.dni.com.br"
+  }
+}

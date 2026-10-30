@@ -1,0 +1,27 @@
+{
+  "name": "Catálogo de Balcão — Cilindros & Contatos de Ignição",
+  "short_name": "Balcão Ignição",
+  "description": "Localizador Visual de Caixas Físicas, Cilindros de Ignição, Comutadores de Partida e Travas de Direção",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1d4ed8",
+  "icons": [
+    {
+      "src": "/icons/32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
