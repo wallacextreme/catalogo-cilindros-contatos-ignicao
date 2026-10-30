@@ -667,6 +667,42 @@ def extract_catalogs() -> Dict[str, Any]:
                             specs=parsed["ignitionSpecs"]
                         )
 
+                        # Preço de referência de balcão
+                        ptype_val = parsed["ignitionSpecs"]["pieceType"]
+                        desc_lower = parsed["cleanDescription"].lower()
+                        if "Trava" in ptype_val:
+                            initial_price = 165.0
+                        elif "Chave Geral" in ptype_val:
+                            initial_price = 65.0
+                        elif "Excêntrico" in ptype_val:
+                            initial_price = 28.0
+                        elif "Capa" in ptype_val:
+                            initial_price = 35.0
+                        elif "Cilindro" in ptype_val:
+                            if "chip" in parsed["ignitionSpecs"].get("transponder", "").lower() or "transponder" in desc_lower:
+                                initial_price = 85.0
+                            elif any(k in desc_lower for k in ["astra", "zafira", "meriva", "omega", "vectra"]):
+                                initial_price = 92.0
+                            elif any(k in desc_lower for k in ["palio", "siena", "brava", "golf"]):
+                                initial_price = 78.0
+                            else:
+                                initial_price = 58.0
+                        else:
+                            if "chicote" in parsed["ignitionSpecs"].get("connection", "").lower() or "chicote" in desc_lower:
+                                initial_price = 65.0
+                            elif any(k in desc_lower for k in ["polo", "fox", "audi", "bora", "vectra", "astra"]):
+                                initial_price = 72.0
+                            elif any(k in desc_lower for k in ["corcel", "belina", "pampa"]):
+                                initial_price = 48.0
+                            elif any(k in desc_lower for k in ["uno", "premio", "elba", "fiorino"]):
+                                initial_price = 42.0
+                            elif any(k in desc_lower for k in ["monza", "chevette", "kadett"]):
+                                initial_price = 45.0
+                            elif any(k in desc_lower for k in ["gol", "voyage", "parati", "santana"]):
+                                initial_price = 38.0
+                            else:
+                                initial_price = 46.0
+
                         product_obj = {
                             "id": prod_id,
                             "commercialCode": parsed["commercialCode"],
@@ -686,7 +722,7 @@ def extract_catalogs() -> Dict[str, Any]:
                             "searchTokens": tokens,
                             "images": image_urls if image_urls else [primary_img],
                             "primaryImage": primary_img,
-                            "price": None,
+                            "price": initial_price,
                             "needsDescriptionReview": needs_review,
                             "sourceDocument": docx_path.name,
                             "tableIndex": ti,

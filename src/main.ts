@@ -10,6 +10,7 @@ import { BackupModal } from "./ui/backup-modal";
 class App {
   private allProducts: Product[] = [];
   private filteredProducts: Product[] = [];
+  private boxFilterQuery = "";
   private filters: FilterState = {
     searchQuery: "",
     selectedCategory: "Todas",
@@ -70,7 +71,10 @@ class App {
           p.category === cat ||
           p.subCategory === cat ||
           p.ignitionSpecs.pieceType === cat ||
-          (cat === "Excêntricos / Chaves Gerais" && (p.ignitionSpecs.pieceType === "Excêntrico de Ignição" || p.ignitionSpecs.pieceType === "Chave Geral" || p.ignitionSpecs.pieceType === "Capa / Borboleta de Ignição"));
+          (cat === "Excêntricos / Chaves Gerais" &&
+            (p.ignitionSpecs.pieceType === "Excêntrico de Ignição" ||
+              p.ignitionSpecs.pieceType === "Chave Geral" ||
+              p.ignitionSpecs.pieceType === "Capa / Borboleta de Ignição"));
         if (!matchesCategory) return false;
       }
 
@@ -101,13 +105,21 @@ class App {
         const pBoxNorm = this.normalizeText(p.boxNumber);
         const pBoxClean = pBoxNorm.replace(/[^a-z0-9]/g, "");
         const targetBoxClean = targetBox.replace(/[^a-z0-9]/g, "");
-        if (pBoxClean === targetBoxClean || pBoxClean === targetBoxClean.replace(/^0+/, "") || targetBoxClean === pBoxClean.replace(/^0+/, "")) {
+        if (
+          pBoxClean === targetBoxClean ||
+          pBoxClean === targetBoxClean.replace(/^0+/, "") ||
+          targetBoxClean === pBoxClean.replace(/^0+/, "")
+        ) {
           return true;
         }
       }
 
       // Busca por tokens pré-indexados
-      if (p.searchTokens.some((tok) => tok.includes(qRaw) || (qClean && tok.replace(/[^a-z0-9]/g, "").includes(qClean)))) {
+      if (
+        p.searchTokens.some(
+          (tok) => tok.includes(qRaw) || (qClean && tok.replace(/[^a-z0-9]/g, "").includes(qClean))
+        )
+      ) {
         return true;
       }
 
@@ -117,7 +129,11 @@ class App {
       );
 
       const words = qRaw.split(/\s+/).filter(Boolean);
-      return words.every((word) => searchable.includes(word) || (qClean && searchable.replace(/[^a-z0-9]/g, "").includes(word.replace(/[^a-z0-9]/g, ""))));
+      return words.every(
+        (word) =>
+          searchable.includes(word) ||
+          (qClean && searchable.replace(/[^a-z0-9]/g, "").includes(word.replace(/[^a-z0-9]/g, "")))
+      );
     });
   }
 
@@ -166,7 +182,11 @@ class App {
               <button
                 type="button"
                 data-mode="grid"
-                class="btn-view-mode px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${this.filters.viewMode === "grid" ? "bg-white dark:bg-neutral-700 text-blue-600 dark:text-blue-400 shadow-sm" : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"}"
+                class="btn-view-mode px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                  this.filters.viewMode === "grid"
+                    ? "bg-white dark:bg-neutral-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                    : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
+                }"
                 title="Grade Detalhada de Balcão"
               >
                 ${getIcon("grid", "w-4 h-4")}
@@ -175,7 +195,11 @@ class App {
               <button
                 type="button"
                 data-mode="mural"
-                class="btn-view-mode px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${this.filters.viewMode === "mural" ? "bg-white dark:bg-neutral-700 text-blue-600 dark:text-blue-400 shadow-sm" : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"}"
+                class="btn-view-mode px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                  this.filters.viewMode === "mural"
+                    ? "bg-white dark:bg-neutral-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                    : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
+                }"
                 title="Mural Comparador de Amostra (Fotos Grandes)"
               >
                 ${getIcon("mural", "w-4 h-4")}
@@ -184,21 +208,36 @@ class App {
               <button
                 type="button"
                 data-mode="boxes"
-                class="btn-view-mode px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${this.filters.viewMode === "boxes" ? "bg-white dark:bg-neutral-700 text-blue-600 dark:text-blue-400 shadow-sm" : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"}"
-                title="Visualizador por Caixas Físicas"
+                class="btn-view-mode px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                  this.filters.viewMode === "boxes"
+                    ? "bg-white dark:bg-neutral-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                    : "text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
+                }"
+                title="Visualizador Compacto por Caixas Físicas"
               >
                 ${getIcon("box", "w-4 h-4")}
                 <span>Caixas</span>
               </button>
             </div>
 
-            <!-- Botão Ocultar / Mostrar Preços -->
+            <!-- Botão Ocultar / Mostrar Preços (Feedback Visual Claro) -->
             <button
               type="button"
-              class="btn-toggle-prices p-2 rounded-xl border border-neutral-200 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white transition"
-              title="${this.filters.hidePrices ? "Mostrar Preços" : "Ocultar Preços (Modo Balcão com Cliente)"}"
+              class="btn-toggle-prices px-3 py-1.5 rounded-xl border transition flex items-center gap-1.5 ${
+                this.filters.hidePrices
+                  ? "bg-amber-100 hover:bg-amber-200 dark:bg-amber-950/80 dark:hover:bg-amber-900/80 border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 shadow-sm"
+                  : "bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700 border-neutral-200 dark:border-neutral-700 text-neutral-700 dark:text-neutral-300"
+              }"
+              title="${
+                this.filters.hidePrices
+                  ? "Preços estão OCULTOS para o cliente. Clique para mostrar."
+                  : "Preços estão VISÍVEIS. Clique para ocultar do cliente."
+              }"
             >
-              ${this.filters.hidePrices ? getIcon("eyeOff", "w-5 h-5") : getIcon("eye", "w-5 h-5")}
+              ${this.filters.hidePrices ? getIcon("eyeOff", "w-4 h-4 text-amber-600 dark:text-amber-400") : getIcon("eye", "w-4 h-4 text-neutral-500")}
+              <span class="text-xs font-bold ${this.filters.hidePrices ? "text-amber-800 dark:text-amber-300" : "text-neutral-700 dark:text-neutral-300 hidden md:inline"}">
+                ${this.filters.hidePrices ? "Preços Ocultos" : "Preços Visíveis"}
+              </span>
             </button>
 
             <!-- Alternador de Tema (Daylight / Dark) -->
@@ -245,11 +284,15 @@ class App {
               autocomplete="off"
               spellcheck="false"
             />
-            ${this.filters.searchQuery ? `
+            ${
+              this.filters.searchQuery
+                ? `
               <button type="button" class="btn-clear-search absolute inset-y-0 right-0 pr-3.5 flex items-center text-neutral-400 hover:text-neutral-600 dark:hover:text-white">
                 ${getIcon("close", "w-4 h-4")}
               </button>
-            ` : ""}
+            `
+                : ""
+            }
           </div>
         </div>
 
@@ -268,7 +311,9 @@ class App {
             { label: "Gol c/ chip", query: "gol c/ chip" },
             { label: "Kombi Excêntrico", query: "kombi excêntrico" },
             { label: "Corcel 6 Terminais", query: "corcel 6 terminais" },
-          ].map(ex => `
+          ]
+            .map(
+              (ex) => `
             <button
               type="button"
               data-query="${ex.query}"
@@ -276,7 +321,9 @@ class App {
             >
               ${ex.label}
             </button>
-          `).join("")}
+          `
+            )
+            .join("")}
         </div>
 
         <!-- Linha 4: Filtros de Categoria, Montadora e Especificação -->
@@ -290,15 +337,23 @@ class App {
               { id: "Contato / Comutador de Ignição", label: "Comutador / Contato" },
               { id: "Trava de Direção", label: "Trava de Direção" },
               { id: "Excêntricos / Chaves Gerais", label: "Excêntricos / Gerais" },
-            ].map(cat => `
+            ]
+              .map(
+                (cat) => `
               <button
                 type="button"
                 data-category="${cat.id}"
-                class="category-chip px-3 py-1 rounded-full font-semibold transition ${this.filters.selectedCategory === cat.id ? "bg-blue-600 text-white shadow-sm" : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700"}"
+                class="category-chip px-3 py-1 rounded-full font-semibold transition ${
+                  this.filters.selectedCategory === cat.id
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700"
+                }"
               >
                 ${cat.label}
               </button>
-            `).join("")}
+            `
+              )
+              .join("")}
           </div>
 
           <!-- Dropdowns: Montadora & Especificação -->
@@ -334,19 +389,39 @@ class App {
       </header>
 
       <!-- CORPO PRINCIPAL DE RESULTADOS -->
-      <main class="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-6 py-6">
-        <!-- Indicador de Status dos Resultados -->
-        <div class="flex items-center justify-between pb-4 text-xs text-neutral-500 dark:text-neutral-400">
-          <span>Mostrando <strong>${filteredCount}</strong> de <strong>${totalCount}</strong> peças</span>
-          ${this.filters.searchQuery ? `
-            <span class="bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 px-2 py-0.5 rounded font-mono">
-              Busca: "${this.filters.searchQuery}"
-            </span>
-          ` : ""}
-        </div>
+      <main class="flex-1 max-w-[1700px] w-full mx-auto px-4 sm:px-6 py-5">
+        <!-- Indicador de Status dos Resultados (quando em Grade ou Mural) -->
+        ${
+          this.filters.viewMode !== "boxes"
+            ? `
+          <div class="flex items-center justify-between pb-3.5 text-xs text-neutral-500 dark:text-neutral-400">
+            <span>Mostrando <strong>${filteredCount}</strong> de <strong>${totalCount}</strong> peças</span>
+            ${
+              this.filters.searchQuery
+                ? `
+              <span class="bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300 px-2 py-0.5 rounded font-mono font-bold">
+                Busca: "${this.filters.searchQuery}"
+              </span>
+            `
+                : ""
+            }
+          </div>
+        `
+            : ""
+        }
 
         ${filteredCount === 0 ? this.renderEmptyState() : this.renderProductsView()}
       </main>
+
+      <!-- Botão Flutuante Voltar ao Topo -->
+      <button
+        type="button"
+        id="btn-scroll-top"
+        class="fixed bottom-6 right-6 p-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-xl transition-all duration-200 z-30 opacity-0 pointer-events-none hover:scale-110 flex items-center justify-center"
+        title="Voltar ao Topo da Página"
+      >
+        <svg class="w-5 h-5 -rotate-90" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>
 
       <!-- FOOTER -->
       <footer class="bg-white dark:bg-neutral-900 border-t border-neutral-200 dark:border-neutral-800 py-3 text-center text-xs text-neutral-400">
@@ -356,6 +431,7 @@ class App {
 
     this.attachHeaderEvents();
     this.attachProductEvents();
+    this.attachScrollTopEvents();
   }
 
   private renderEmptyState(): string {
@@ -459,11 +535,15 @@ class App {
           </div>
 
           <!-- Badge se tiver múltiplos ângulos -->
-          ${hasMultipleImages ? `
+          ${
+            hasMultipleImages
+              ? `
             <span class="absolute bottom-2 right-2 px-1.5 py-0.5 bg-neutral-900/80 text-white rounded text-[10px] font-mono font-bold">
               ${p.images.length} fotos
             </span>
-          ` : ""}
+          `
+              : ""
+          }
 
           <!-- Indicador de Marca -->
           <span class="absolute top-2 left-2 px-1.5 py-0.5 bg-neutral-100/90 dark:bg-neutral-800/90 text-neutral-600 dark:text-neutral-300 rounded text-[10px] font-semibold">
@@ -477,35 +557,67 @@ class App {
           <div class="space-y-1.5">
             <div class="flex flex-wrap items-center gap-1.5">
               <!-- Subtipo Badge -->
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${isCylinder ? "bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300" : isSwitch ? "bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300" : isLock ? "bg-purple-100 text-purple-800 dark:bg-purple-950/70 dark:text-purple-300" : "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"}">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                isCylinder
+                  ? "bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300"
+                  : isSwitch
+                  ? "bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300"
+                  : isLock
+                  ? "bg-purple-100 text-purple-800 dark:bg-purple-950/70 dark:text-purple-300"
+                  : "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
+              }">
                 ${specs.pieceType}
               </span>
 
               <!-- Transponder Badge -->
-              ${isCylinder && specs.transponder !== "Não se Aplica" ? `
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${specs.transponder === "Com Transponder (Chip)" ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-950/70 dark:text-indigo-300" : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"}">
+              ${
+                isCylinder && specs.transponder !== "Não se Aplica"
+                  ? `
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+                  specs.transponder === "Com Transponder (Chip)"
+                    ? "bg-indigo-100 text-indigo-800 dark:bg-indigo-950/70 dark:text-indigo-300"
+                    : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400"
+                }">
                   ${specs.transponder === "Com Transponder (Chip)" ? "C/ Chip" : "S/ Chip"}
                 </span>
-              ` : ""}
+              `
+                  : ""
+              }
 
               <!-- Terminais / Chicote Badge -->
-              ${isSwitch ? `
-                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${specs.connection === "Com Chicote" ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300" : "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"}">
+              ${
+                isSwitch
+                  ? `
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+                  specs.connection === "Com Chicote"
+                    ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300"
+                    : "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300"
+                }">
                   ${specs.connection === "Com Chicote" ? "C/ Chicote" : "Pino Seco"}
                 </span>
-                ${specs.terminalCount !== "Não Informado" ? `
+                ${
+                  specs.terminalCount !== "Não Informado"
+                    ? `
                   <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-neutral-200 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200">
                     ${specs.terminalCount}
                   </span>
-                ` : ""}
-              ` : ""}
+                `
+                    : ""
+                }
+              `
+                  : ""
+              }
 
               <!-- Features Especiais -->
-              ${specs.features.map(f => `
+              ${specs.features
+                .map(
+                  (f) => `
                 <span class="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded text-[10px] font-medium">
                   ${f}
                 </span>
-              `).join("")}
+              `
+                )
+                .join("")}
             </div>
 
             <!-- Aplicação Veicular -->
@@ -514,34 +626,72 @@ class App {
             </p>
 
             <!-- Códigos Cruzados e OEM -->
-            ${p.crossReferenceCodes.length > 0 || p.oemCodes.length > 0 ? `
+            ${
+              p.crossReferenceCodes.length > 0 || p.oemCodes.length > 0
+                ? `
               <div class="pt-1 flex flex-wrap gap-1 text-[10px] font-mono">
-                ${p.crossReferenceCodes.slice(0, 3).map(cc => `
+                ${p.crossReferenceCodes
+                  .slice(0, 3)
+                  .map(
+                    (cc) => `
                   <span class="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded" title="Código Cruzado">
                     ${cc}
                   </span>
-                `).join("")}
-                ${p.oemCodes.slice(0, 2).map(oc => `
+                `
+                  )
+                  .join("")}
+                ${p.oemCodes
+                  .slice(0, 2)
+                  .map(
+                    (oc) => `
                   <span class="px-1.5 py-0.5 bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 rounded font-semibold text-neutral-700 dark:text-neutral-300" title="Código OEM Original">
                     OEM: ${oc}
                   </span>
-                `).join("")}
+                `
+                  )
+                  .join("")}
               </div>
-            ` : ""}
+            `
+                : ""
+            }
           </div>
 
-          <!-- Bottom Row: Preço (se visível) + Botão Editar -->
+          <!-- Bottom Row: Preço com Ocultação & Edição + Botão Editar -->
           <div class="pt-2 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-xs">
-            <div>
-              ${!this.filters.hidePrices && p.price !== null ? `
-                <span class="font-mono font-black text-emerald-600 dark:text-emerald-400 text-sm">
-                  R$ ${p.price.toFixed(2)}
+            <div class="flex items-center gap-2">
+              ${
+                this.filters.hidePrices
+                  ? `
+                <span class="px-2 py-0.5 bg-neutral-100 dark:bg-neutral-800 border border-neutral-300/80 dark:border-neutral-700 rounded font-mono text-xs font-bold text-neutral-400 dark:text-neutral-500 tracking-wider select-none" title="Preço ocultado para o cliente (Modo Balcão)">
+                  R$ ••••••
                 </span>
-              ` : `
-                <span class="text-[11px] text-neutral-400 font-medium">
-                  ${p.vehicleMakes.join(", ")}
-                </span>
-              `}
+              `
+                  : p.price !== null
+                  ? `
+                <button
+                  type="button"
+                  data-id="${p.id}"
+                  class="badge-price font-mono font-black text-emerald-600 dark:text-emerald-400 text-sm hover:underline flex items-center gap-1"
+                  title="Clique para alterar o preço de balcão"
+                >
+                  <span>R$ ${p.price.toFixed(2).replace(".", ",")}</span>
+                  ${getIcon("edit", "w-3 h-3 text-emerald-500 opacity-60 hover:opacity-100")}
+                </button>
+              `
+                  : `
+                <button
+                  type="button"
+                  data-id="${p.id}"
+                  class="badge-price font-mono text-xs text-neutral-400 dark:text-neutral-500 hover:text-blue-500"
+                  title="Clique para cadastrar o preço"
+                >
+                  + Definir Preço
+                </button>
+              `
+              }
+              <span class="text-[10px] text-neutral-400 font-medium hidden sm:inline">
+                ${p.vehicleMakes.join(", ")}
+              </span>
             </div>
 
             <button
@@ -564,10 +714,12 @@ class App {
   private renderMuralView(): string {
     return `
       <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-        ${this.filteredProducts.map((p) => `
+        ${this.filteredProducts
+          .map(
+            (p) => `
           <div
             data-id="${p.id}"
-            class="mural-card group bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer flex flex-col"
+            class="mural-card group bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all cursor-pointer flex flex-col justify-between"
           >
             <!-- Badge Caixa Flutuante -->
             <div class="relative aspect-square bg-white flex items-center justify-center p-2">
@@ -588,15 +740,28 @@ class App {
               <p class="text-[10px] text-neutral-500 truncate mt-0.5">
                 ${p.application || p.description}
               </p>
+              <div class="mt-1">
+                ${
+                  this.filters.hidePrices
+                    ? `<span class="text-[10px] font-mono font-bold text-neutral-400">R$ ••••••</span>`
+                    : p.price !== null
+                    ? `<span class="text-[11px] font-mono font-black text-emerald-600 dark:text-emerald-400">R$ ${p.price
+                        .toFixed(2)
+                        .replace(".", ",")}</span>`
+                    : ""
+                }
+              </div>
             </div>
           </div>
-        `).join("")}
+        `
+          )
+          .join("")}
       </div>
     `;
   }
 
   /**
-   * MODO 3: MAPA DE CAIXAS FÍSICAS
+   * MODO 3: MAPA DE CAIXAS FÍSICAS (COMPACTO, RESPONSIVO, COM BOTÕES DE VOLTAR/FECHAR E BUSCA)
    */
   private renderBoxesView(): string {
     // Agrupa itens por caixa
@@ -610,55 +775,182 @@ class App {
     }
 
     // Ordena caixas numericamente
-    const sortedBoxes = Array.from(boxes.keys()).sort((a, b) => {
+    let sortedBoxes = Array.from(boxes.keys()).sort((a, b) => {
       const numA = parseInt(a.replace(/\D/g, ""), 10);
       const numB = parseInt(b.replace(/\D/g, ""), 10);
       if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
       return a.localeCompare(b);
     });
 
-    return `
-      <div class="space-y-6">
-        ${sortedBoxes.map((boxKey) => {
-          const items = boxes.get(boxKey) || [];
-          return `
-            <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-5 shadow-sm">
-              <div class="flex items-center justify-between pb-4 border-b border-neutral-100 dark:border-neutral-800">
-                <div class="flex items-center gap-3">
-                  <span class="px-3 py-1 bg-blue-600 text-white rounded-lg font-mono font-black text-lg">
-                    CAIXA ${boxKey}
-                  </span>
-                  <span class="text-xs text-neutral-500 font-semibold">
-                    ${items.length} ${items.length === 1 ? "peça guardada" : "peças guardadas"} nesta caixa
-                  </span>
-                </div>
-              </div>
+    // Se houver filtro local de caixa
+    if (this.boxFilterQuery) {
+      const bq = this.boxFilterQuery.toLowerCase().replace(/[^a-z0-9]/g, "");
+      sortedBoxes = sortedBoxes.filter((b) => b.toLowerCase().replace(/[^a-z0-9]/g, "").includes(bq));
+    }
 
-              <!-- Lista de Peças da Caixa -->
-              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pt-4">
-                ${items.map((item) => `
-                  <div
-                    data-id="${item.id}"
-                    class="img-zoom-trigger p-2.5 rounded-xl border border-neutral-200 dark:border-neutral-800 hover:border-blue-500 bg-neutral-50 dark:bg-neutral-800/40 flex items-center gap-3 cursor-pointer transition"
-                  >
-                    <img src="${item.primaryImage}" alt="${item.commercialCode}" class="w-14 h-14 object-contain bg-white rounded-lg p-1 border" />
-                    <div class="overflow-hidden flex-1">
-                      <span class="block font-mono font-bold text-xs text-neutral-900 dark:text-white truncate">
-                        ${item.commercialCode}
+    const totalPiecesInBoxes = sortedBoxes.reduce((acc, b) => acc + (boxes.get(b)?.length || 0), 0);
+
+    return `
+      <div class="space-y-4">
+        <!-- BARRA SUPERIOR DE CONTROLES DO MODO CAIXAS -->
+        <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-3.5 shadow-sm flex flex-wrap items-center justify-between gap-3 sticky top-[135px] z-30 backdrop-blur-md bg-white/95 dark:bg-neutral-900/95">
+          <!-- Botão Voltar para a Grade + Fechar -->
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              class="btn-back-to-grid px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-2 shadow-sm"
+              title="Voltar para a visualização principal em Grade de Produtos"
+            >
+              ${getIcon("chevronLeft", "w-4 h-4")}
+              <span>Voltar para a Grade</span>
+            </button>
+
+            <button
+              type="button"
+              class="btn-close-boxes px-3 py-2 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700 rounded-xl text-xs font-bold transition flex items-center gap-1.5"
+              title="Fechar modo caixas e retornar à Grade"
+            >
+              ${getIcon("close", "w-4 h-4")}
+              <span>Fechar</span>
+            </button>
+          </div>
+
+          <!-- Campo de Busca/Filtro Instantâneo de Caixa -->
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-neutral-500 font-semibold hidden sm:inline">Filtrar Caixa:</span>
+            <input
+              type="text"
+              id="box-sub-filter"
+              value="${this.boxFilterQuery}"
+              placeholder="Ex: 28, 01, 10..."
+              class="px-3 py-1.5 bg-neutral-50 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-lg text-xs font-mono font-bold text-neutral-800 dark:text-neutral-200 focus:outline-none focus:ring-2 focus:ring-blue-500 w-36"
+            />
+            ${
+              this.boxFilterQuery
+                ? `
+              <button type="button" class="btn-clear-box-filter p-1 text-neutral-400 hover:text-neutral-600 dark:hover:text-white">
+                ${getIcon("close", "w-4 h-4")}
+              </button>
+            `
+                : ""
+            }
+          </div>
+
+          <!-- Totalizador e Atalho de Impressão -->
+          <div class="flex items-center gap-2 text-xs text-neutral-500 font-semibold">
+            <span class="px-2.5 py-1 bg-neutral-100 dark:bg-neutral-800 rounded-lg font-mono">
+              ${sortedBoxes.length} Caixas (${totalPiecesInBoxes} Peças)
+            </span>
+            <button
+              type="button"
+              class="btn-print-box-map-shortcut px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm"
+              title="Imprimir mapa de caixas para conferência física"
+            >
+              ${getIcon("download", "w-3.5 h-3.5")}
+              <span>Imprimir Mapa</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- NAVEGADOR RÁPIDO DE PÍLULAS DE CAIXAS (CARROSSEL HORIZONTAL) -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-2 text-xs no-scrollbar">
+          <span class="text-[11px] font-bold text-neutral-400 uppercase tracking-wider shrink-0 mr-1">IR PARA CAIXA:</span>
+          ${sortedBoxes
+            .map(
+              (bKey) => `
+            <button
+              type="button"
+              data-jump-box="${bKey}"
+              class="btn-jump-box shrink-0 px-2.5 py-1 bg-white dark:bg-neutral-900 hover:bg-blue-50 dark:hover:bg-blue-950/60 border border-neutral-200 dark:border-neutral-800 hover:border-blue-400 rounded-lg font-mono text-xs font-black text-neutral-700 dark:text-neutral-300 transition shadow-2xs"
+            >
+              CX ${bKey}
+            </button>
+          `
+            )
+            .join("")}
+        </div>
+
+        <!-- GRADE RESPONSIVA DE CARDS DE CAIXAS COMPACTOS (3 a 4 por linha) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4" id="boxes-grid-container">
+          ${sortedBoxes
+            .map((boxKey) => {
+              const items = boxes.get(boxKey) || [];
+              return `
+              <div
+                id="box-card-${boxKey}"
+                class="box-section-card bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between"
+              >
+                <div>
+                  <!-- Topo do Card de Caixa -->
+                  <div class="flex items-center justify-between pb-3 border-b border-neutral-100 dark:border-neutral-800">
+                    <div class="flex items-center gap-2">
+                      <span class="px-2.5 py-0.5 bg-blue-600 text-white rounded-lg font-mono font-black text-sm shadow-xs">
+                        CX ${boxKey}
                       </span>
-                      <span class="block text-[10px] text-blue-600 dark:text-blue-400 font-medium truncate">
-                        ${item.subCategory}
-                      </span>
-                      <span class="block text-[10px] text-neutral-500 truncate">
-                        ${item.application}
+                      <span class="text-[11px] text-neutral-500 font-semibold">
+                        ${items.length} ${items.length === 1 ? "peça" : "peças"}
                       </span>
                     </div>
+                    <button
+                      type="button"
+                      data-filter-box="${boxKey}"
+                      class="btn-view-box-in-grid text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
+                      title="Ver apenas esta caixa na Grade principal"
+                    >
+                      <span>Ver na Grade</span>
+                      ${getIcon("chevronRight", "w-3 h-3")}
+                    </button>
                   </div>
-                `).join("")}
+
+                  <!-- Lista Compacta de Peças da Caixa -->
+                  <div class="space-y-2 pt-3">
+                    ${items
+                      .map(
+                        (item) => `
+                      <div class="p-2 rounded-xl bg-neutral-50/80 dark:bg-neutral-800/40 border border-neutral-200/80 dark:border-neutral-700/60 hover:border-blue-400 flex items-center gap-2.5 transition">
+                        <!-- Foto com Lightbox -->
+                        <div
+                          data-id="${item.id}"
+                          class="img-zoom-trigger w-12 h-12 bg-white rounded-lg border border-neutral-200 dark:border-neutral-700 p-0.5 shrink-0 flex items-center justify-center cursor-pointer hover:scale-105 transition shadow-2xs"
+                          title="Ver foto com Zoom 400%"
+                        >
+                          <img src="${item.primaryImage}" alt="${item.commercialCode}" class="max-w-full max-h-full object-contain" loading="lazy" />
+                        </div>
+
+                        <!-- Dados da Peça -->
+                        <div class="flex-1 min-w-0">
+                          <div class="flex items-center justify-between gap-1">
+                            <span class="font-mono font-black text-xs text-neutral-900 dark:text-white truncate">
+                              ${item.commercialCode}
+                            </span>
+                            ${
+                              this.filters.hidePrices
+                                ? `<span class="text-[10px] font-mono font-bold text-neutral-400 shrink-0">••••••</span>`
+                                : item.price !== null
+                                ? `<span class="text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400 shrink-0">R$ ${item.price
+                                    .toFixed(2)
+                                    .replace(".", ",")}</span>`
+                                : ""
+                            }
+                          </div>
+                          <span class="block text-[10px] text-blue-600 dark:text-blue-400 font-semibold truncate">
+                            ${item.subCategory}
+                          </span>
+                          <p class="text-[10px] text-neutral-500 truncate" title="${item.application}">
+                            ${item.application || item.description}
+                          </p>
+                        </div>
+                      </div>
+                    `
+                      )
+                      .join("")}
+                  </div>
+                </div>
               </div>
-            </div>
-          `;
-        }).join("")}
+            `;
+            })
+            .join("")}
+        </div>
       </div>
     `;
   }
@@ -732,12 +1024,13 @@ class App {
       btn.addEventListener("click", () => {
         const mode = (btn as HTMLElement).dataset.mode as ViewMode;
         this.filters.viewMode = mode;
+        this.boxFilterQuery = "";
         localStorage.setItem("viewMode", mode);
         this.render();
       });
     });
 
-    // Botão Ocultar / Mostrar Preços
+    // Botão Ocultar / Mostrar Preços (com toggle e re-render imediato)
     document.querySelector(".btn-toggle-prices")?.addEventListener("click", () => {
       this.filters.hidePrices = !this.filters.hidePrices;
       localStorage.setItem("hidePrices", String(this.filters.hidePrices));
@@ -769,6 +1062,68 @@ class App {
           this.render();
         },
       }).open();
+    });
+
+    // Botões do Modo Caixas: Voltar para a Grade & Fechar
+    document.querySelectorAll(".btn-back-to-grid, .btn-close-boxes").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        this.filters.viewMode = "grid";
+        this.boxFilterQuery = "";
+        localStorage.setItem("viewMode", "grid");
+        this.render();
+      });
+    });
+
+    // Filtro local dentro do Modo Caixas
+    const boxSubFilter = document.getElementById("box-sub-filter") as HTMLInputElement;
+    boxSubFilter?.addEventListener("input", (e) => {
+      this.boxFilterQuery = (e.target as HTMLInputElement).value;
+      this.render();
+      const input = document.getElementById("box-sub-filter") as HTMLInputElement;
+      if (input) {
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+      }
+    });
+
+    document.querySelector(".btn-clear-box-filter")?.addEventListener("click", () => {
+      this.boxFilterQuery = "";
+      this.render();
+    });
+
+    // Navegação rápida de pílulas de caixas (Scroll Suave até a caixa)
+    document.querySelectorAll(".btn-jump-box").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetBox = (btn as HTMLElement).dataset.jumpBox;
+        const targetEl = document.getElementById(`box-card-${targetBox}`);
+        if (targetEl) {
+          targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
+          targetEl.classList.add("ring-2", "ring-blue-500");
+          setTimeout(() => targetEl.classList.remove("ring-2", "ring-blue-500"), 1200);
+        }
+      });
+    });
+
+    // Ver caixa na Grade
+    document.querySelectorAll(".btn-view-box-in-grid").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const boxKey = (btn as HTMLElement).dataset.filterBox || "";
+        this.filters.viewMode = "grid";
+        this.filters.searchQuery = boxKey;
+        this.boxFilterQuery = "";
+        localStorage.setItem("viewMode", "grid");
+        this.applyFilters();
+        this.render();
+      });
+    });
+
+    // Atalho de Impressão de Mapa de Caixas
+    document.querySelectorAll(".btn-print-box-map-shortcut").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        new BackupModal({
+          onDataRestored: () => this.init(),
+        }).open();
+      });
     });
   }
 
@@ -848,6 +1203,57 @@ class App {
           this.render();
         }
       });
+    });
+
+    // Edição rápida de Preço em 1 clique
+    document.querySelectorAll(".badge-price").forEach((priceBtn) => {
+      priceBtn.addEventListener("click", async (e) => {
+        e.stopPropagation();
+        const id = (priceBtn as HTMLElement).dataset.id;
+        const prod = this.allProducts.find((p) => p.id === id);
+        if (!prod) return;
+
+        const currentVal = prod.price !== null ? prod.price.toString() : "";
+        const newVal = prompt(
+          `Digite o novo preço (R$) para a peça ${prod.commercialCode} (${prod.brand}):`,
+          currentVal
+        );
+        if (newVal !== null) {
+          const parsed = parseFloat(newVal.replace(",", "."));
+          if (!isNaN(parsed) && parsed >= 0) {
+            prod.price = parsed;
+            prod.updatedAt = new Date().toISOString();
+            await saveProductUpdate(prod);
+            this.applyFilters();
+            this.render();
+          } else if (newVal.trim() === "") {
+            prod.price = null;
+            prod.updatedAt = new Date().toISOString();
+            await saveProductUpdate(prod);
+            this.applyFilters();
+            this.render();
+          }
+        }
+      });
+    });
+  }
+
+  private attachScrollTopEvents(): void {
+    const scrollBtn = document.getElementById("btn-scroll-top");
+    if (!scrollBtn) return;
+
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 300) {
+        scrollBtn.classList.remove("opacity-0", "pointer-events-none");
+        scrollBtn.classList.add("opacity-100", "pointer-events-auto");
+      } else {
+        scrollBtn.classList.add("opacity-0", "pointer-events-none");
+        scrollBtn.classList.remove("opacity-100", "pointer-events-auto");
+      }
+    });
+
+    scrollBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
 }
